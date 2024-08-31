@@ -30,7 +30,6 @@ public class FibonacciController {
 
     @GetMapping("/statistics")
     public List<Fibonacci> getFibonacciStatistics() {
-        // Obtener los números de Fibonacci más consultados
         return fibonacciRepository.findAllByOrderByQueryCountDesc();
     }
 }

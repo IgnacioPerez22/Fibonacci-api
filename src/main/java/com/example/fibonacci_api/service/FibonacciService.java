@@ -20,20 +20,16 @@ public class FibonacciService {
     private Map<Integer, Long> memoizationCache = new HashMap<>();
 
     public Long calculateFibonacci(int n) {
-        // Verifica si el resultado ya existe en la base de datos
         Optional<Fibonacci> cachedFibonacci = fibonacciRepository.findById(n);
         if (cachedFibonacci.isPresent()) {
-            // Incrementar el contador de consultas
             Fibonacci fib = cachedFibonacci.get();
-            fib.incrementQueryCount(); // Incrementar el contador de consultas
-            fibonacciRepository.save(fib); // Guardar en la base de datos
+            fib.incrementQueryCount();
+            fibonacciRepository.save(fib);
             return fib.getFibonacciValue();
         }
 
-        // Calcular el Fibonacci usando memoización
         Long result = computeFibonacciWithMemoization(n);
 
-        // Guardar el resultado en la base de datos con contador inicial 1
         fibonacciRepository.save(new Fibonacci(n, result));
 
         return result;

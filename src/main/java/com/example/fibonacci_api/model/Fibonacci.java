@@ -7,20 +7,19 @@ import jakarta.persistence.Id;
 public class Fibonacci {
 
     @Id
-    private int id; // El índice n del número de Fibonacci
-    private Long fibonacciValue; // El n-ésimo número de Fibonacci
-    private int queryCount; // Contador de consultas
+    private int id;
+    private Long fibonacciValue;
+    private int queryCount;
 
-    // Constructor por defecto
-    public Fibonacci() {}
+    public Fibonacci() {
+    }
 
     public Fibonacci(int id, Long fibonacciValue) {
         this.id = id;
         this.fibonacciValue = fibonacciValue;
-        this.queryCount = 0; // Inicia el contador de consultas en 1
+        this.queryCount = 0;
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }

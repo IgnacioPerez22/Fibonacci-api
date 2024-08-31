@@ -23,7 +23,7 @@ class FibonacciTest {
         assertNotNull(fibonacci);
         assertEquals(5, fibonacci.getId());
         assertEquals(8L, fibonacci.getFibonacciValue());
-        assertEquals(0, fibonacci.getQueryCount()); // Verifica que el contador se inicie en 0
+        assertEquals(0, fibonacci.getQueryCount());
     }
 
     @Test
@@ -41,7 +41,7 @@ class FibonacciTest {
 
         fibonacci.incrementQueryCount();
         assertEquals(1, fibonacci.getQueryCount());
-        
+
         fibonacci.incrementQueryCount();
         assertEquals(2, fibonacci.getQueryCount());
     }
@@ -50,6 +50,6 @@ class FibonacciTest {
     void testIncrementQueryCount() {
         Fibonacci fibonacci = new Fibonacci(5, 8L);
         fibonacci.incrementQueryCount();
-        assertEquals(1, fibonacci.getQueryCount()); // Verifica que el contador de consultas se incremente
+        assertEquals(1, fibonacci.getQueryCount());
     }
 }

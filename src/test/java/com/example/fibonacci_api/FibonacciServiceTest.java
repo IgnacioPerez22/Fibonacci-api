@@ -28,13 +28,11 @@ class FibonacciServiceTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        // Limpiar mocks antes de cada prueba para evitar interferencias
         reset(fibonacciRepository);
     }
 
     @Test
     void testComputeFibonacciWithMemoization_BaseCases() {
-        // Casos base para memoización
         Long result1 = fibonacciService.calculateFibonacci(1);
         Long result2 = fibonacciService.calculateFibonacci(2);
 
@@ -44,56 +42,49 @@ class FibonacciServiceTest {
 
     @Test
     void testComputeFibonacciWithMemoization_MemoizedCase() {
-        // Configura el repositorio para que devuelva un resultado ya calculado
         Fibonacci cachedResult = new Fibonacci(5, 5L);
-        cachedResult.incrementQueryCount(); // Simula que el contador ya está en 1
+        cachedResult.incrementQueryCount();
 
-        // Simula que la búsqueda en el repositorio devuelve el resultado ya calculado
         when(fibonacciRepository.findById(5)).thenReturn(Optional.of(cachedResult));
 
-        // Primera llamada, incrementa el contador a 2
         Long resultMemoized1 = fibonacciService.calculateFibonacci(5);
-        assertEquals(5L, resultMemoized1); // Verifica que el resultado es el esperado
-        assertEquals(2, cachedResult.getQueryCount()); // Verifica que el contador de consultas se incrementó a 2
+        assertEquals(5L, resultMemoized1);
+        assertEquals(2, cachedResult.getQueryCount());
 
-        // Segunda llamada, incrementa el contador a 3
         Long resultMemoized2 = fibonacciService.calculateFibonacci(5);
-        assertEquals(5L, resultMemoized2); // Verifica que el resultado es el esperado
-        assertEquals(3, cachedResult.getQueryCount()); // Verifica que el contador de consultas se incrementó a 3
+        assertEquals(5L, resultMemoized2);
+        assertEquals(3, cachedResult.getQueryCount());
 
-        // Verifica que findById fue llamado dos veces
         verify(fibonacciRepository, times(2)).findById(5);
-        // Verifica que save fue llamado dos veces
         verify(fibonacciRepository, times(2)).save(cachedResult);
     }
 
     @Test
     void testComputeFibonacciWithMemoization_CalculateAndCache() {
-        // Configura el repositorio para devolver un resultado vacío
         when(fibonacciRepository.findById(6)).thenReturn(Optional.empty());
 
         Long resultCalculated = fibonacciService.calculateFibonacci(6);
 
-        assertEquals(8L, resultCalculated); // Supongamos que 8 es el valor esperado para fibonacci(6)
-        verify(fibonacciRepository, times(1)).findById(6); // Verifica que se buscó en el repositorio
-        verify(fibonacciRepository, times(1)).save(any(Fibonacci.class)); // Verifica que se guardó el nuevo cálculo
+        assertEquals(8L, resultCalculated);
+        verify(fibonacciRepository, times(1)).findById(6);
+        verify(fibonacciRepository, times(1)).save(any(Fibonacci.class));
     }
 
     @Test
     void testGetFibonacciStatistics() {
         Fibonacci fib1 = new Fibonacci(1, 1L);
-        fib1.incrementQueryCount(); // 2 consultas
+        fib1.incrementQueryCount();
         Fibonacci fib2 = new Fibonacci(2, 1L);
-        fib2.incrementQueryCount(); // 2 consultas
-        fib2.incrementQueryCount(); // 3 consultas
+        fib2.incrementQueryCount();
+        fib2.incrementQueryCount();
 
         when(fibonacciRepository.findAllByOrderByQueryCountDesc()).thenReturn(List.of(fib2, fib1));
 
         List<Fibonacci> statistics = fibonacciService.getFibonacciStatistics();
 
         assertEquals(2, statistics.size());
-        assertEquals(fib2, statistics.get(0)); // El elemento con más consultas debería estar primero
-        assertEquals(fib1, statistics.get(1)); // El elemento con menos consultas debería estar segundo
+        assertEquals(fib2, statistics.get(0));
+        assertEquals(fib1, statistics.get(1));
         verify(fibonacciRepository, times(1)).findAllByOrderByQueryCountDesc();
     }
 }
